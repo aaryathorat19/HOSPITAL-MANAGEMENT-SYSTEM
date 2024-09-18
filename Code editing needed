@@ -1,0 +1,221 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Structure for Patient (Linked List Node)
+typedef struct Patient {
+    int id;
+    char name[100];
+    char ailment[100];
+    struct Patient* next;
+} Patient;
+
+// Structure for Appointment (Queue Node)
+typedef struct Appointment {
+    int patientID;
+    char patientName[100];
+    struct Appointment* next;
+} Appointment;
+
+// Queue structure for managing appointments
+typedef struct Queue {
+    Appointment* front;
+    Appointment* rear;
+} Queue;
+
+// Function to create a new patient node
+Patient* createPatient(int id, char name[], char ailment[]) {
+    Patient* newPatient = (Patient*)malloc(sizeof(Patient));
+    newPatient->id = id;
+    strcpy(newPatient->name, name);
+    strcpy(newPatient->ailment, ailment);
+    newPatient->next = NULL;
+    return newPatient;
+}
+
+// Function to insert a patient into the linked list
+Patient* addPatient(Patient* head, int id, char name[], char ailment[]) {
+    Patient* newPatient = createPatient(id, name, ailment);
+    if (head == NULL) {
+        return newPatient;
+    }
+    Patient* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newPatient;
+    return head;
+}
+
+// Function to search for a patient by name
+Patient* searchPatient(Patient* head, char name[]) {
+    Patient* temp = head;
+    while (temp != NULL) {
+        if (strcmp(temp->name, name) == 0) {
+            return temp;
+        }
+        temp = temp->next;
+    }
+    return NULL;
+}
+
+// Function to delete a patient by ID
+Patient* deletePatient(Patient* head, int id) {
+    if (head == NULL) return NULL;
+    
+    if (head->id == id) {
+        Patient* temp = head;
+        head = head->next;
+        free(temp);
+        return head;
+    }
+
+    Patient* current = head;
+    while (current->next != NULL && current->next->id != id) {
+        current = current->next;
+    }
+    
+    if (current->next == NULL) {
+        printf("Patient not found.\n");
+        return head;
+    }
+
+    Patient* temp = current->next;
+    current->next = current->next->next;
+    free(temp);
+    
+    return head;
+}
+
+// Function to display all patients
+void displayPatients(Patient* head) {
+    if (head == NULL) {
+        printf("No patients registered.\n");
+        return;
+    }
+    Patient* temp = head;
+    while (temp != NULL) {
+        printf("Patient ID: %d, Name: %s, Ailment: %s\n", temp->id, temp->name, temp->ailment);
+        temp = temp->next;
+    }
+}
+
+// Function to create an appointment queue
+Queue* createQueue() {
+    Queue* q = (Queue*)malloc(sizeof(Queue));
+    q->front = q->rear = NULL;
+    return q;
+}
+
+// Function to add an appointment to the queue
+void enqueue(Queue* q, int patientID, char patientName[]) {
+    Appointment* newAppointment = (Appointment*)malloc(sizeof(Appointment));
+    newAppointment->patientID = patientID;
+    strcpy(newAppointment->patientName, patientName);
+    newAppointment->next = NULL;
+
+    if (q->rear == NULL) {
+        q->front = q->rear = newAppointment;
+        return;
+    }
+
+    q->rear->next = newAppointment;
+    q->rear = newAppointment;
+}
+
+// Function to process an appointment (dequeue)
+void dequeue(Queue* q) {
+    if (q->front == NULL) {
+        printf("No appointments scheduled.\n");
+        return;
+    }
+
+    Appointment* temp = q->front;
+    printf("Processing appointment for Patient ID: %d, Name: %s\n", temp->patientID, temp->patientName);
+    q->front = q->front->next;
+
+    if (q->front == NULL) {
+        q->rear = NULL;
+    }
+
+    free(temp);
+}
+
+// Main function to manage the hospital system
+int main() {
+    Patient* patientList = NULL;
+    Queue* appointmentQueue = createQueue();
+    int choice, id;
+    char name[100], ailment[100];
+
+    while (1) {
+        printf("\n--- Hospital Management System ---\n");
+        printf("1. Add Patient\n");
+        printf("2. Search Patient\n");
+        printf("3. Delete Patient\n");
+        printf("4. Display Patients\n");
+        printf("5. Schedule Appointment\n");
+        printf("6. Process Appointment\n");
+        printf("7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter Patient ID: ");
+                scanf("%d", &id);
+                printf("Enter Patient Name: ");
+                scanf("%s", name);
+                printf("Enter Ailment: ");
+                scanf("%s", ailment);
+                patientList = addPatient(patientList, id, name, ailment);
+                break;
+
+            case 2:
+                printf("Enter Patient Name to Search: ");
+                scanf("%s", name);
+                Patient* patient = searchPatient(patientList, name);
+                if (patient != NULL) {
+                    printf("Patient Found: ID: %d, Name: %s, Ailment: %s\n", patient->id, patient->name, patient->ailment);
+                } else {
+                    printf("Patient not found.\n");
+                }
+                break;
+
+            case 3:
+                printf("Enter Patient ID to Delete: ");
+                scanf("%d", &id);
+                patientList = deletePatient(patientList, id);
+                break;
+
+            case 4:
+                printf("Registered Patients:\n");
+                displayPatients(patientList);
+                break;
+
+            case 5:
+                printf("Enter Patient ID for Appointment: ");
+                scanf("%d", &id);
+                Patient* temp = searchPatient(patientList, id);
+                if (temp != NULL) {
+                    enqueue(appointmentQueue, temp->id, temp->name);
+                    printf("Appointment scheduled for Patient ID: %d, Name: %s\n", temp->id, temp->name);
+                } else {
+                    printf("Patient not found, please register first.\n");
+                }
+                break;
+
+            case 6:
+                dequeue(appointmentQueue);
+                break;
+
+            case 7:
+                exit(0);
+
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
