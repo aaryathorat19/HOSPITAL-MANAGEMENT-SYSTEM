@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Structure for Patient (Linked List Node)
+//Patient 
 typedef struct Patient {
     int id;
     char name[100];
@@ -10,20 +10,20 @@ typedef struct Patient {
     struct Patient* next;
 } Patient;
 
-// Structure for Appointment (Queue Node)
+// Appointment 
 typedef struct Appointment {
     int patientID;
     char patientName[100];
     struct Appointment* next;
 } Appointment;
 
-// Queue structure for managing appointments
+// managing appointments
 typedef struct Queue {
     Appointment* front;
     Appointment* rear;
 } Queue;
 
-// Function to create a new patient node
+// create a new patient node
 Patient* createPatient(int id, char name[], char ailment[]) {
     Patient* newPatient = (Patient*)malloc(sizeof(Patient));
     newPatient->id = id;
@@ -33,8 +33,8 @@ Patient* createPatient(int id, char name[], char ailment[]) {
     return newPatient;
 }
 
-// Function to insert a patient into the linked list
-Patient* addPatient(Patient* head, int id, char name[], char ailment[]) {
+// insert a patient into the linked list
+Patient* addPatient(Patient* head, int id, char name[], char ailment[]) {              
     Patient* newPatient = createPatient(id, name, ailment);
     if (head == NULL) {
         return newPatient;
@@ -47,7 +47,7 @@ Patient* addPatient(Patient* head, int id, char name[], char ailment[]) {
     return head;
 }
 
-// Function to search for a patient by name
+// search for a patient by name
 Patient* searchPatient(Patient* head, char name[]) {
     Patient* temp = head;
     while (temp != NULL) {
@@ -59,7 +59,7 @@ Patient* searchPatient(Patient* head, char name[]) {
     return NULL;
 }
 
-// Function to delete a patient by ID
+// delete a patient by ID
 Patient* deletePatient(Patient* head, int id) {
     if (head == NULL) return NULL;
     
@@ -87,7 +87,7 @@ Patient* deletePatient(Patient* head, int id) {
     return head;
 }
 
-// Function to display all patients
+// display all patients
 void displayPatients(Patient* head) {
     if (head == NULL) {
         printf("No patients registered.\n");
@@ -100,14 +100,14 @@ void displayPatients(Patient* head) {
     }
 }
 
-// Function to create an appointment queue
+//create an appointment queue
 Queue* createQueue() {
     Queue* q = (Queue*)malloc(sizeof(Queue));
     q->front = q->rear = NULL;
     return q;
 }
 
-// Function to add an appointment to the queue
+//add an appointment to the queue
 void enqueue(Queue* q, int patientID, char patientName[]) {
     Appointment* newAppointment = (Appointment*)malloc(sizeof(Appointment));
     newAppointment->patientID = patientID;
@@ -123,7 +123,7 @@ void enqueue(Queue* q, int patientID, char patientName[]) {
     q->rear = newAppointment;
 }
 
-// Function to process an appointment (dequeue)
+// process an appointment (dequeue)
 void dequeue(Queue* q) {
     if (q->front == NULL) {
         printf("No appointments scheduled.\n");
