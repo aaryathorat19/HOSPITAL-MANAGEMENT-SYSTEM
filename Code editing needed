@@ -159,21 +159,26 @@ int main() {
         printf("7. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
+        getchar();  // Clear newline character from input buffer
 
         switch (choice) {
             case 1:
                 printf("Enter Patient ID: ");
                 scanf("%d", &id);
+                getchar();  // Clear newline character from input buffer
                 printf("Enter Patient Name: ");
-                scanf("%s", name);
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;  // Remove newline character
                 printf("Enter Ailment: ");
-                scanf("%s", ailment);
+                fgets(ailment, sizeof(ailment), stdin);
+                ailment[strcspn(ailment, "\n")] = 0;  // Remove newline character
                 patientList = addPatient(patientList, id, name, ailment);
                 break;
 
             case 2:
                 printf("Enter Patient Name to Search: ");
-                scanf("%s", name);
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;  // Remove newline character
                 Patient* patient = searchPatient(patientList, name);
                 if (patient != NULL) {
                     printf("Patient Found: ID: %d, Name: %s, Ailment: %s\n", patient->id, patient->name, patient->ailment);
