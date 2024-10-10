@@ -7,6 +7,7 @@ This C program provides a simple Hospital Management System that manages patient
 
 A linked list is used to manage the patients in the system. Each node in the linked list represents a patient with details such as Patient ID, Name, and Ailment.
 The linked list allows dynamic addition and deletion of patients.
+
 2. Queue:
 
 A queue is used to manage appointments in the system. The queue follows a First-Come-First-Served (FCFS) approach, where the first appointment scheduled will be the first one to be processed.
